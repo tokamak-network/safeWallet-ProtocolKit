@@ -1,0 +1,21 @@
+{
+  "name": "safewallet-protocolkit",
+  "version": "1.0.0",
+  "description": "Safe Wallet EIP-1271 Contract Confirmation Tool",
+  "main": "src/confirmationTest.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/confirmationTest.js",
+    "test": "node src/confirmationTest.js",
+    "test:real": "node src/realWorldTest.js"
+  },
+  "dependencies": {
+    "@safe-global/protocol-kit": "^4.0.0",
+    "@safe-global/safe-core-sdk-types": "^5.0.0",
+    "ethers": "^6.8.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0"
+  }
+}
