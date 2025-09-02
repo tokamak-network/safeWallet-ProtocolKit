@@ -1,0 +1,19 @@
+{
+  "name": "safewallet-protocol-kit",
+  "version": "1.0.0",
+  "description": "SafeWallet Protocol Kit for DAOContract signing",
+  "main": "index.js",
+  "scripts": {
+    "test": "node src/test-dao-signing.js",
+    "test-pure": "node src/test-pure-ethers.js",
+    "sign": "node src/dao-signing-script.js",
+    "sign-pure": "node src/pure-ethers-dao-signing.js"
+  },
+  "dependencies": {
+    "ethers": "^6.8.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0"
+  }
+}
