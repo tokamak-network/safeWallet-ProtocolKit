@@ -1,0 +1,24 @@
+{
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "node --loader ts-node/esm src/protocolKit.ts",
+    "dev:tsx": "tsx src/protocolKit.ts",
+    "start": "node dist/protocolKit.js",
+    "protocol": "node --loader ts-node/esm src/protocolKit.ts"
+  },
+  "dependencies": {
+    "@safe-global/api-kit": "^4.0.0",
+    "@safe-global/protocol-kit": "^6.1.1",
+    "dotenv": "^17.2.1",
+    "ethers": "^6.15.0",
+    "viem": "^2.37.1"
+  },
+  "devDependencies": {
+    "@safe-global/types-kit": "^3.0.0",
+    "@types/node": "^24.3.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
