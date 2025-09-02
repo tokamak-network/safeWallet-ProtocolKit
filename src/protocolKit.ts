@@ -33,7 +33,7 @@ if (!RPC_URL || !OWNER_PRIVATE_KEY || !OWNER_PRIVATE_KEY2 || !SAFE_ADDRESS || !D
 
 async function main(): Promise<void> {
     const safeAccountConfig: SafeAccountConfig = {
-        owners: ['0xA2101482b28E3D99ff6ced517bA41EFf4971a386', '0x6E1c4a442E9B9ddA59382ee78058650F1723E0F6', '0x3bFda92Fa3bC0AB080Cac3775147B6318b1C5115'],
+        owners: ['0x80047c450ee203c4A970A7005d6cd30b2F34C98f', '0x6E1c4a442E9B9ddA59382ee78058650F1723E0F6', '0x3bFda92Fa3bC0AB080Cac3775147B6318b1C5115'],
         threshold: 2
         // More optional properties
     }
@@ -51,7 +51,7 @@ async function main(): Promise<void> {
 
     // Create a transaction object
     const safeTransactionData = {
-        "to": "0x757DE9c340c556b56f62eFaE859Da5e08BAAE7A2",
+        "to": "0xf0B595d10a92A5a9BC3fFeA7e79f5d266b6035Ea",
         "data": "0x",
         "value": "10000000000000000",
         "operation": 0,
@@ -61,7 +61,7 @@ async function main(): Promise<void> {
         "nonce": 0,
         "refundReceiver": "0x0000000000000000000000000000000000000000",
         "safeTxGas": "0"
-      }
+    }
 
     // // Create a new transaction object
     // let transactionSafe2_3 = await protocolKit.createTransaction({

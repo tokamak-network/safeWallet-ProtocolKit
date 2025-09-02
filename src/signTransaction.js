@@ -45,7 +45,7 @@ async function main() {
 
   // 3. Safe 트랜잭션 데이터 생성
   const safeTransactionData = {
-    "to": "0x757DE9c340c556b56f62eFaE859Da5e08BAAE7A2",
+    "to": "0xf0B595d10a92A5a9BC3fFeA7e79f5d266b6035Ea",
     "data": "0x",
     "value": "10000000000000000",
     "operation": 0,
