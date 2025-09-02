@@ -27,13 +27,13 @@ async function main() {
   const multisigOwner1Kit = await Safe.init({
     provider: RPC_URL,
     signer: OWNER_PRIVATE_KEY,
-    safeAddress: DAO_ADDRESS
+    safeAddress: MULTISIG_ADDRESS
   });
 
   const multisigOwner2Kit = await Safe.init({
     provider: RPC_URL,
     signer: OWNER_PRIVATE_KEY2,
-    safeAddress: DAO_ADDRESS
+    safeAddress: MULTISIG_ADDRESS
   });
 
   // 2. 메인 Safe 인스턴스 생성 (DAOContract가 소유자인 Safe)
@@ -45,14 +45,14 @@ async function main() {
 
   // 3. Safe 트랜잭션 데이터 생성
   const safeTransactionData = {
-    "to": "0xf0B595d10a92A5a9BC3fFeA7e79f5d266b6035Ea",
+    "to": "0x757DE9c340c556b56f62eFaE859Da5e08BAAE7A2",
     "data": "0x",
-    "value": "20000000000000000",
+    "value": "10000000000000000",
     "operation": 0,
     "baseGas": "0",
     "gasPrice": "0",
     "gasToken": "0x0000000000000000000000000000000000000000",
-    "nonce": 1,
+    "nonce": 0,
     "refundReceiver": "0x0000000000000000000000000000000000000000",
     "safeTxGas": "0"
   }
@@ -72,8 +72,8 @@ async function main() {
   const owner1Signature = await multisigOwner1Kit.signHash(txHash);
   const owner2Signature = await multisigOwner2Kit.signHash(txHash);
 
-  console.log("Owner1 Signature:", owner1Signature.data);
-  console.log("Owner2 Signature:", owner2Signature.data);
+  // console.log("Owner1 Signature:", owner1Signature.data);
+  // console.log("Owner2 Signature:", owner2Signature.data);
 
   // 6. 서명들을 올바른 순서로 정렬 (Safe는 서명자 주소 순서대로 정렬 필요)
   const signatures = [
@@ -86,7 +86,7 @@ async function main() {
     .map(sig => sig.data.slice(2)) // 0x 제거
     .join('');
 
-  // console.log("concatenatedSignatures : ", concatenatedSignatures)
+  console.log("concatenatedSignatures : ", concatenatedSignatures)
 
   // // 서명들을 연결하여 하나의 서명으로 생성
   // const concatenatedSignatures2 = owner1Signature.data + owner2Signature.data.slice(2);
@@ -105,21 +105,22 @@ async function main() {
   // Safe에서 요구하는 컨트랙트 서명 형식:
   // [32 bytes r][32 bytes s][1 byte v] 여기서 v = 0 (EIP-1271 표시)
   const contractSignature = {
-    signer: DAO_ADDRESS,
+    signer: MULTISIG_ADDRESS,
     data: '0x' + 
           concatenatedSignatures + 
           '00'.repeat(32) + // r 값 (0으로 패딩)
-          DAO_ADDRESS.slice(2).padStart(64, '0') + // s 값에 컨트랙트 주소
+          MULTISIG_ADDRESS.slice(2).padStart(64, '0') + // s 값에 컨트랙트 주소
           '00' // v = 0 (EIP-1271 서명 표시)
   };
-  console.log("Contract Signature:", contractSignature.data);
+  console.log("Contract Signature:", contractSignature);
 
+  const realsignatures = "0x3e671789ad7a20809ca981a06e9c6e8080ce4f9429babc775c4a56208fa966db178e12aa4b33326f8d5579e279af8e23dd56dd3eaa62ae71b0208001bcf83e0d1cf318f0151eec172f3ee567f24a71f052e28a6a50b99660cb7ec50b30c4f3dbc728c57de4d241ff21d0e89fdfe076b8bc1746cf558173c82d8dbece354a3a79021b"
   
   // 9. Safe 트랜잭션에 컨트랙트 서명 추가
   safeTransaction.addSignature(contractSignature)
 
-  const isValid = await verifyDAOApproval(DAO_ADDRESS, txHash, concatenatedSignatures);
-  console.log("DAO approval valid:", isValid);
+  // const isValid = await verifyDAOApproval(DAO_ADDRESS, txHash, concatenatedSignatures);
+  // console.log("DAO approval valid:", isValid);
 
   // // EOA 소유자 서명도 추가
   // const eoaSignature = await mainSafeKit.signTransaction(safeTransaction);
@@ -134,16 +135,18 @@ async function main() {
   // const safeTxHash = await mainSafeKit.getTransactionHash(safeTransaction);
   console.log("1")
 
-  // Safe Service에 트랜잭션 제출
-  await apiKit.proposeTransaction({
-    safeAddress: SAFE_ADDRESS,
-    safeTransactionData: safeTransaction.data,
-    safeTxHash: txHash,
-    senderAddress: DAO_ADDRESS,
-    senderSignature: contractSignature.data
-  });
+  // // Safe Service에 트랜잭션 제출
+  // await apiKit.proposeTransaction({
+  //   safeAddress: SAFE_ADDRESS,
+  //   safeTransactionData: safeTransaction.data,
+  //   safeTxHash: txHash,
+  //   senderAddress: DAO_ADDRESS,
+  //   senderSignature: contractSignature.data
+  // });
 
-  console.log("Transaction proposed successfully!");
+  // console.log("Transaction proposed successfully!");
+
+  // console.log("contractSignature.data : ", contractSignature.data)
 
   await apiKit.confirmTransaction(
     txHash,

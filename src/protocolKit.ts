@@ -51,7 +51,7 @@ async function main(): Promise<void> {
 
     // Create a transaction object
     const safeTransactionData = {
-        "to": "0x6E1c4a442E9B9ddA59382ee78058650F1723E0F6",
+        "to": "0x757DE9c340c556b56f62eFaE859Da5e08BAAE7A2",
         "data": "0x",
         "value": "10000000000000000",
         "operation": 0,
@@ -61,7 +61,7 @@ async function main(): Promise<void> {
         "nonce": 0,
         "refundReceiver": "0x0000000000000000000000000000000000000000",
         "safeTxGas": "0"
-    }
+      }
 
     // // Create a new transaction object
     // let transactionSafe2_3 = await protocolKit.createTransaction({
@@ -95,29 +95,33 @@ async function main(): Promise<void> {
         SigningMethod.SAFE_SIGNATURE,  // MultiSigWallet이 Safe라면
         SAFE_ADDRESS!  // 부모 Safe Wallet 주소 지정
     );
-    console.log("multiSigTransaction1", multiSigTransaction)
+    // console.log("multiSigTransaction1", multiSigTransaction)
 
     // DAOOwner2 연결 및 서명
     protocolKit = await protocolKit.connect({
         provider: RPC_URL!,
         signer: OWNER_PRIVATE_KEY2!
     });
+
     multiSigTransaction = await protocolKit.signTransaction(
         multiSigTransaction,
         SigningMethod.SAFE_SIGNATURE,
         SAFE_ADDRESS!
     );
 
-    console.log("multiSigTransaction2", multiSigTransaction)
+    // console.log("multiSigTransaction2", multiSigTransaction)
+    // console.log("multiSigTransaction.signatures.values() ", multiSigTransaction.signatures.values())
 
     const daoContractSignature = await buildContractSignature(
         Array.from(multiSigTransaction.signatures.values()),  // MultiSigWallet의 2개 서명 배열
-        DAO_ADDRESS!  // DAOContract 주소 (EIP-1271 구현체)
+        MULTISIG_ADDRESS!  // DAOContract 주소 (EIP-1271 구현체)
     );
+
+    // console.log("daoContractSignature : ", daoContractSignature)
 
     multiSigTransaction.addSignature(daoContractSignature);
 
-    console.log("Signature finish")
+    // console.log("Signature finish")
 
     const safeTxHash = await protocolKit.getTransactionHash(multiSigTransaction);
     const apiKit = new SafeApiKit({

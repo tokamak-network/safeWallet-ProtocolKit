@@ -33,7 +33,7 @@ if (!RPC_URL || !OWNER_PRIVATE_KEY || !OWNER_PRIVATE_KEY2 || !SAFE_ADDRESS || !D
 
 async function main(): Promise<void> {
     const safeAccountConfig: SafeAccountConfig = {
-        owners: ['0xA2101482b28E3D99ff6ced517bA41EFf4971a386', '0x6E1c4a442E9B9ddA59382ee78058650F1723E0F6', '0x3bFda92Fa3bC0AB080Cac3775147B6318b1C5115'],
+        owners: ['0x6E1c4a442E9B9ddA59382ee78058650F1723E0F6', '0x3bFda92Fa3bC0AB080Cac3775147B6318b1C5115', '0x82460E7D90e19cF778a2C09DcA75Fc9f79Da877C'],
         threshold: 2
         // More optional properties
     }
@@ -71,7 +71,7 @@ async function main(): Promise<void> {
         "safeTxGas": "0"
     }
 
-    const safeTransaction = await mainSafeKit.createTransaction({
+    let safeTransaction = await mainSafeKit.createTransaction({
         transactions: [safeTransactionData]
     });
 
@@ -80,25 +80,89 @@ async function main(): Promise<void> {
     const txHash = await mainSafeKit.getTransactionHash(safeTransaction);
     console.log("Safe Transaction Hash:", txHash);
 
+    // Connect OWNER_4_ADDRESS and the address of SAFE_2_3_ADDRESS
+    protocolKit = await protocolKit.connect({
+        provider: RPC_URL,
+        signer: OWNER_PRIVATE_KEY,
+        safeAddress: MULTISIG_ADDRESS
+    })
+    
+    // Sign the transactionSafe2_3 with OWNER_4_ADDRESS
+    // After this, the transactionSafe2_3 contains the signature from OWNER_4_ADDRESS
+    safeTransaction = await protocolKit.signTransaction(
+        safeTransaction,
+        SigningMethod.SAFE_SIGNATURE,
+        SAFE_ADDRESS // Parent Safe address
+    )
+
+    // Connect OWNER_5_ADDRESS
+    protocolKit = await protocolKit.connect({
+        provider: RPC_URL,
+        signer: OWNER_PRIVATE_KEY2
+    })
+    
+    // Sign the transactionSafe2_3 with OWNER_5_ADDRESS
+    // After this, the transactionSafe2_3 contains the signature from OWNER_5_ADDRESS
+    safeTransaction = await protocolKit.signTransaction(
+        safeTransaction,
+        SigningMethod.SAFE_SIGNATURE,
+        SAFE_ADDRESS // Parent Safe address
+    )
+    
+    // Build the contract signature of SAFE_2_3_ADDRESS
+    const signatureSafe2_3 = await buildContractSignature(
+        Array.from(safeTransaction.signatures.values()),
+        MULTISIG_ADDRESS!
+    )
+    console.log("signatureSafe2_3:", signatureSafe2_3)
+    
+    // Add the signatureSafe2_3 to safeTransaction
+    // After this, the safeTransaction contains the signature from OWNER_1_ADDRESS, OWNER_2_ADDRESS, SAFE_1_1_ADDRESS and SAFE_2_3_ADDRESS
+    safeTransaction.addSignature(signatureSafe2_3)
+
+    const safeTransactionHash = await protocolKit.getTransactionHash(safeTransaction)
+
+
+    const apiKit = new SafeApiKit({
+        chainId: 11155111n,
+        apiKey: SAFE_API_KEY
+    });
+
+    // Confirm the transaction from OWNER_2_ADDRESS
+    await apiKit.confirmTransaction(
+        safeTransactionHash,
+        buildSignatureBytes([signatureSafe2_3!])
+     )
+  
+
+    // const signingMethod = SigningMethod.ETH_SIGN_TYPED_DATA_V4
+
+    // const preimageSafeAddress = '0x...'
+
+    // const signedSafeTransaction = await protocolKit.signTransaction(
+    //     safeTransaction,
+    //     signingMethod, // Optional
+    //     preimageSafeAddress // Optional
+    // )
     
 }
 
-async function createSignature(signer: SignerWithAddress, hash: string): Promise<string> {
-    // Sign the raw hash bytes directly (not as a message)
-    const hashBytes = ethers.utils.arrayify(hash);
-    const flatSig = await signer.signMessage(hashBytes);
-    return flatSig;
-  }
+// async function createSignature(signer: SignerWithAddress, hash: string): Promise<string> {
+//     // Sign the raw hash bytes directly (not as a message)
+//     const hashBytes = ethers.utils.arrayify(hash);
+//     const flatSig = await signer.signMessage(hashBytes);
+//     return flatSig;
+//   }
 
-  async function createMultipleSignatures(
-    signers: SignerWithAddress[],
-    hash: string
-  ): Promise<string> {
-    const signatures = await Promise.all(
-      signers.map(signer => createSignature(signer, hash))
-    );
-    return ethers.utils.hexConcat(signatures);
-  }
+//   async function createMultipleSignatures(
+//     signers: SignerWithAddress[],
+//     hash: string
+//   ): Promise<string> {
+//     const signatures = await Promise.all(
+//       signers.map(signer => createSignature(signer, hash))
+//     );
+//     return ethers.utils.hexConcat(signatures);
+//   }
 
 main().catch((error) => {
     console.error(error);
