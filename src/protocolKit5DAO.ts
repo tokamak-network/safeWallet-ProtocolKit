@@ -62,15 +62,15 @@ async function main(): Promise<void> {
     const safeTransactionData = {
         "to": "0xf0B595d10a92A5a9BC3fFeA7e79f5d266b6035Ea",
         "data": "0x",
-        "value": "100000000000000000",
+        "value": "20000000000000000",
         "operation": 0,
         "baseGas": "0",
         "gasPrice": "0",
         "gasToken": "0x0000000000000000000000000000000000000000",
-        "nonce": 2,
+        "nonce": 0,
         "refundReceiver": "0x0000000000000000000000000000000000000000",
         "safeTxGas": "0"
-      }
+    }
 
     let transactionSafe2_3 = await protocolKit.createTransaction({
         transactions: [safeTransactionData]
@@ -80,8 +80,8 @@ async function main(): Promise<void> {
     // let protocolKit2_3 = await Safe.init({
     protocolKit = await protocolKit.connect({
         provider: RPC_URL!,
-        signer: CHILD_SIGNER1_PRIVATE_KEY!,
-        safeAddress: CHILD_ADDRESS!
+        signer: OWNER_PRIVATE_KEY!,
+        safeAddress: MULTISIG_ADDRESS!
     })
 
 
@@ -92,13 +92,13 @@ async function main(): Promise<void> {
     transactionSafe2_3 = await protocolKit.signTransaction(
         transactionSafe2_3,
         SigningMethod.SAFE_SIGNATURE,
-        PARENT_ADDRESS // Parent Safe address
+        SAFE_ADDRESS // Parent Safe address
     )
     
     // Connect OWNER_5_ADDRESS(MultiSigWallet의 Owner2)
     protocolKit = await protocolKit.connect({
         provider: RPC_URL,
-        signer: CHILD_SIGNER3_PRIVATE_KEY
+        signer: OWNER_PRIVATE_KEY2
     })
   
     // Sign the transactionSafe2_3 with OWNER_5_ADDRESS
@@ -107,13 +107,13 @@ async function main(): Promise<void> {
     transactionSafe2_3 = await protocolKit.signTransaction(
         transactionSafe2_3,
         SigningMethod.SAFE_SIGNATURE,
-        PARENT_ADDRESS // Parent Safe address
+        SAFE_ADDRESS // Parent Safe address
     )
 
     // Build the contract signature of SAFE_2_3_ADDRESS
     const signatureSafe2_3 = await buildContractSignature(
         Array.from(transactionSafe2_3.signatures.values()),
-        CHILD_ADDRESS!
+        DAO_ADDRESS!
     )
     // console.log("signatureSafe2_3 : ", signatureSafe2_3);
   
@@ -124,13 +124,13 @@ async function main(): Promise<void> {
     const safeTransactionHash = await protocolKit.getTransactionHash(transactionSafe2_3)
     const signature = await protocolKit.signHash(safeTransactionHash)
     
-    const signerSafeSig2_3 = transactionSafe2_3.getSignature(CHILD_ADDRESS!) as EthSafeSignature
+    const signerSafeSig2_3 = transactionSafe2_3.getSignature(DAO_ADDRESS!) as EthSafeSignature
 
     const apiKit = new SafeApiKit({
         chainId: 11155111n,
         apiKey: SAFE_API_KEY
     });
-    const safeTxHash = "0xbcdaae91b50b094b5933b08a522b51e5c170a57ab26f418b292591f2c8ba9168"
+    const safeTxHash = "0x34148392eddee2686a39b6da312a95afdbf953bef85122e5b0c73f3b624cba8f"
     // // Get the transactions
     // const signedTransaction = await apiKit.getTransaction(safeTransactionHash)
     // console.log("signedTransaction :", signedTransaction)

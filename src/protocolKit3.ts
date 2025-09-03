@@ -23,6 +23,7 @@ const OWNER_PRIVATE_KEY2 = process.env.OWNER_PRIVATE_KEY2;
 const SAFE_ADDRESS = process.env.SAFE_ADDRESS;
 const DAO_ADDRESS = process.env.DAO_ADDRESS;
 const MULTISIG_ADDRESS = process.env.MULTISIG_ADDRESS;
+const NEW_MULTISIG_ADDRESS = process.env.NEW_MULTISIG_ADDRESS;
 const SAFE_API_KEY = process.env.SAFE_API_KEY;
 const SIGNER1_API_KEY = process.env.SAFE_SIGNER1_PRIVATE_KEY;
 const SIGNER3_API_KEY = process.env.SAFE_SIGNER3_PRIVATE_KEY;
@@ -68,7 +69,7 @@ async function main(): Promise<void> {
         "nonce": 1,
         "refundReceiver": "0x0000000000000000000000000000000000000000",
         "safeTxGas": "0"
-      }
+    }
 
     let transactionSafe2_3 = await protocolKit.createTransaction({
         transactions: [safeTransactionData]
@@ -79,7 +80,7 @@ async function main(): Promise<void> {
     protocolKit = await protocolKit.connect({
         provider: RPC_URL!,
         signer: OWNER_PRIVATE_KEY!,
-        safeAddress: MULTISIG_ADDRESS!
+        safeAddress: NEW_MULTISIG_ADDRESS!
     })
 
 
@@ -111,7 +112,7 @@ async function main(): Promise<void> {
     // Build the contract signature of SAFE_2_3_ADDRESS
     const signatureSafe2_3 = await buildContractSignature(
         Array.from(transactionSafe2_3.signatures.values()),
-        MULTISIG_ADDRESS!
+        NEW_MULTISIG_ADDRESS!
     )
     // console.log("signatureSafe2_3 : ", signatureSafe2_3);
   
@@ -122,12 +123,14 @@ async function main(): Promise<void> {
     const safeTransactionHash = await protocolKit.getTransactionHash(transactionSafe2_3)
     const signature = await protocolKit.signHash(safeTransactionHash)
     
-    const signerSafeSig2_3 = transactionSafe2_3.getSignature(MULTISIG_ADDRESS!) as EthSafeSignature
+    const signerSafeSig2_3 = transactionSafe2_3.getSignature(NEW_MULTISIG_ADDRESS!) as EthSafeSignature
 
     const apiKit = new SafeApiKit({
         chainId: 11155111n,
         apiKey: SAFE_API_KEY
     });
+
+    const safeTxHash = "0xef0d87aaa01c2f620b2d1ae729cf25165cecd561f7de3c7ae0c0fc4af689b9ab"
 
     // // Get the transactions
     // const signedTransaction = await apiKit.getTransaction(safeTransactionHash)
@@ -135,13 +138,13 @@ async function main(): Promise<void> {
 
 
     // API 사용하지 않고 로컬에서만 처리
-    console.log('Transaction hash:', safeTransactionHash);
-    console.log('Signatures:', transactionSafe2_3.signatures);
-    console.log('signerSafeSig2_3:', signerSafeSig2_3);
-    console.log('Transaction ready for execution');
+    // console.log('Transaction hash:', safeTransactionHash);
+    // console.log('Signatures:', transactionSafe2_3.signatures);
+    // console.log('signerSafeSig2_3:', signerSafeSig2_3);
+    console.log('Transaction ready for confirm');
 
     await apiKit.confirmTransaction(
-        safeTransactionHash,
+        safeTxHash,
         buildSignatureBytes([signerSafeSig2_3])
     )
     // await apiKit.confirmTransaction(
