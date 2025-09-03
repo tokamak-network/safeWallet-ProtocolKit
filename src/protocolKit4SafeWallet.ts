@@ -126,6 +126,8 @@ async function main(): Promise<void> {
     
     const signerSafeSig2_3 = transactionSafe2_3.getSignature(CHILD_ADDRESS!) as EthSafeSignature
 
+    console.log("signerSafeSig2_3 :", signerSafeSig2_3)
+
     const apiKit = new SafeApiKit({
         chainId: 11155111n,
         apiKey: SAFE_API_KEY
