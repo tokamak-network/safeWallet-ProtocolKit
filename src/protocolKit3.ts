@@ -24,6 +24,7 @@ const SAFE_ADDRESS = process.env.SAFE_ADDRESS;
 const DAO_ADDRESS = process.env.DAO_ADDRESS;
 const MULTISIG_ADDRESS = process.env.MULTISIG_ADDRESS;
 const SAFE_API_KEY = process.env.SAFE_API_KEY;
+const SIGNER1_API_KEY = process.env.SAFE_SIGNER1_PRIVATE_KEY;
 const SIGNER3_API_KEY = process.env.SAFE_SIGNER3_PRIVATE_KEY;
 
 if (!RPC_URL || !OWNER_PRIVATE_KEY || !OWNER_PRIVATE_KEY2 || !SAFE_ADDRESS || !DAO_ADDRESS) {
@@ -35,6 +36,8 @@ if (!RPC_URL || !OWNER_PRIVATE_KEY || !OWNER_PRIVATE_KEY2 || !SAFE_ADDRESS || !D
 
 async function main(): Promise<void> {
     const STRING_MESSAGE = "I'm the owner of this Safe account"
+
+    const OWNER_ADDRESS = "0x6E1c4a442E9B9ddA59382ee78058650F1723E0F6"
 
     const safeAccountConfig: SafeAccountConfig = {
         owners: ['0x80047c450ee203c4A970A7005d6cd30b2F34C98f', '0x6E1c4a442E9B9ddA59382ee78058650F1723E0F6', '0x3bFda92Fa3bC0AB080Cac3775147B6318b1C5115'],
@@ -83,6 +86,7 @@ async function main(): Promise<void> {
     // Sign the transactionSafe2_3 with OWNER_4_ADDRESS
     // After this, the transactionSafe2_3 contains the signature from OWNER_4_ADDRESS
     // Parent Safe Address => SafeWalletAddress
+    // SAFE_ADDRESS is SAFE_3_4_ADDRESS
     transactionSafe2_3 = await protocolKit.signTransaction(
         transactionSafe2_3,
         SigningMethod.SAFE_SIGNATURE,
@@ -97,6 +101,7 @@ async function main(): Promise<void> {
   
     // Sign the transactionSafe2_3 with OWNER_5_ADDRESS
     // After this, the transactionSafe2_3 contains the signature from OWNER_5_ADDRESS
+    // SAFE_ADDRESS is SAFE_3_4_ADDRESS
     transactionSafe2_3 = await protocolKit.signTransaction(
         transactionSafe2_3,
         SigningMethod.SAFE_SIGNATURE,
@@ -124,6 +129,11 @@ async function main(): Promise<void> {
         apiKey: SAFE_API_KEY
     });
 
+    // // Get the transactions
+    // const signedTransaction = await apiKit.getTransaction(safeTransactionHash)
+    // console.log("signedTransaction :", signedTransaction)
+
+
     // API 사용하지 않고 로컬에서만 처리
     console.log('Transaction hash:', safeTransactionHash);
     console.log('Signatures:', transactionSafe2_3.signatures);
@@ -134,6 +144,10 @@ async function main(): Promise<void> {
         safeTransactionHash,
         buildSignatureBytes([signerSafeSig2_3])
     )
+    // await apiKit.confirmTransaction(
+    //     safeTransactionHash,
+    //     signature.data
+    // )
   
 
     // ------------------------------------------------------
