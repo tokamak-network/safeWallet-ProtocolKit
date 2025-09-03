@@ -48,8 +48,10 @@ async function testDAOContractSigning() {
         
         // 2. 간단한 테스트 해시로 DAOContract 서명 테스트
         console.log('\n🧪 2단계: DAOContract 서명 테스트');
-        const testHash = ethers.keccak256(ethers.toUtf8Bytes('test message for DAO signing'));
+        // const testHash = ethers.keccak256(ethers.toUtf8Bytes('test message for DAO signing'));
+        const testHash = "0x34148392eddee2686a39b6da312a95afdbf953bef85122e5b0c73f3b624cba8f"
         console.log(`테스트 해시: ${testHash}`);
+
         
         // MultiSigWallet 서명자들의 서명 수집
         const multiSigSignature = await protocol.collectMultiSigSignatures(testHash);
