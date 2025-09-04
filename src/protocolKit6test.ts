@@ -67,6 +67,24 @@ async function main(): Promise<void> {
 
     // Connect OWNER_4_ADDRESS(MultiSigWallet의 Owner) and the address of SAFE_2_3_ADDRESS(MultiSigWallet)
     // let protocolKit2_3 = await Safe.init({
+    // let multiSigSigns = await protocolKit.connect({
+    //     provider: RPC_URL!,
+    //     signer: OWNER_PRIVATE_KEY!,
+    //     safeAddress: DAO_ADDRESS!
+    // }).then((k) =>
+    //     k.signTransaction(transactionSafe2_3, SigningMethod.SAFE_SIGNATURE, SAFE_ADDRESS)
+    // )
+
+    // multiSigSigns = await protocolKit
+    // .connect({
+    //     provider: RPC_URL!,
+    //     signer: OWNER_PRIVATE_KEY2!,
+    //     safeAddress: DAO_ADDRESS!
+    // })
+    // .then((k) =>
+    //     k.signTransaction(transactionSafe2_3, SigningMethod.SAFE_SIGNATURE, SAFE_ADDRESS)
+    // )
+
     let multiSigSigns = await protocolKit.connect({
         provider: RPC_URL!,
         signer: OWNER_PRIVATE_KEY!,
@@ -85,17 +103,6 @@ async function main(): Promise<void> {
         k.signTransaction(transactionSafe2_3, SigningMethod.SAFE_SIGNATURE, SAFE_ADDRESS)
     )
 
-
-    // transactionSafe2_3 = await protocolKit
-    //     .connect({
-    //         provider: RPC_URL,
-    //         signer: CHILD_SIGNER1_PRIVATE_KEY,
-    //     })
-    //     .then(async (k) => {
-    //         return k.signTransaction(transactionSafe2_3, SigningMethod.ETH_SIGN)
-    //     })
-
-    // console.log("transactionSafe2_3 :", transactionSafe2_3)
 
     // const contractSignature = await buildContractSignature(
     //     Array.from(transactionSafe2_3.signatures.values()),
@@ -126,10 +133,13 @@ async function main(): Promise<void> {
     const safeTxHash = "0x34148392eddee2686a39b6da312a95afdbf953bef85122e5b0c73f3b624cba8f"
     console.log('Transaction ready for confirm');
 
-    await apiKit.confirmTransaction(
-        safeTxHash,
-        buildSignatureBytes([signerSafeSig2_3])
-    )
+    const tx = await protocolKit.executeTransaction(transactionSafe2_3)
+    console.log(tx)
+
+    // await apiKit.confirmTransaction(
+    //     safeTxHash,
+    //     buildSignatureBytes([signerSafeSig2_3])
+    // )
 
     // const tx = await protocolKit.executeTransaction(transactionSafe2_3)
     // console.log(tx)
