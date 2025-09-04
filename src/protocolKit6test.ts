@@ -133,13 +133,13 @@ async function main(): Promise<void> {
     const safeTxHash = "0x34148392eddee2686a39b6da312a95afdbf953bef85122e5b0c73f3b624cba8f"
     console.log('Transaction ready for confirm');
 
-    const tx = await protocolKit.executeTransaction(transactionSafe2_3)
-    console.log(tx)
+    // const tx = await protocolKit.executeTransaction(transactionSafe2_3)
+    // console.log(tx)
 
-    // await apiKit.confirmTransaction(
-    //     safeTxHash,
-    //     buildSignatureBytes([signerSafeSig2_3])
-    // )
+    await apiKit.confirmTransaction(
+        safeTxHash,
+        buildSignatureBytes([signerSafeSig2_3])
+    )
 
     // const tx = await protocolKit.executeTransaction(transactionSafe2_3)
     // console.log(tx)
