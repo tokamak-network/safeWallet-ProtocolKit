@@ -8,16 +8,22 @@ async function testSimpleConfirm() {
         rpcUrl: process.env.RPC_URL || 'http://localhost:8545',
         safeWalletAddress: process.env.SAFE_WALLET_ADDRESS,
         daoContractAddress: process.env.DAO_CONTRACT_ADDRESS,
-        daoPrivateKey: process.env.DAO_PRIVATE_KEY
+        multiSigWalletAddress: process.env.MULTISIG_WALLET_ADDRESS,
+        multiSigSigners: [
+            { privateKey: process.env.MULTISIG_SIGNER1_PRIVATE_KEY },
+            { privateKey: process.env.MULTISIG_SIGNER2_PRIVATE_KEY }
+        ]
     };
 
     // 필수 설정 확인
-    if (!config.safeWalletAddress || !config.daoContractAddress || !config.daoPrivateKey) {
+    if (!config.safeWalletAddress || !config.daoContractAddress || !config.multiSigWalletAddress) {
         console.error('❌ 필수 환경 변수가 설정되지 않았습니다.');
         console.log('다음 환경 변수들을 설정해주세요:');
         console.log('- SAFE_WALLET_ADDRESS');
         console.log('- DAO_CONTRACT_ADDRESS');
-        console.log('- DAO_PRIVATE_KEY');
+        console.log('- MULTISIG_WALLET_ADDRESS');
+        console.log('- MULTISIG_SIGNER1_PRIVATE_KEY');
+        console.log('- MULTISIG_SIGNER2_PRIVATE_KEY');
         console.log('- RPC_URL (선택사항, 기본값: http://localhost:8545)');
         return;
     }
@@ -48,7 +54,7 @@ async function testSimpleConfirm() {
             
             if (result.success) {
                 console.log(`✅ 테스트 ${i + 1} 성공!`);
-                console.log(`📋 승인 트랜잭션: ${result.approveTx}`);
+                console.log(`📋 결과: ${result.message}`);
             } else {
                 console.log(`❌ 테스트 ${i + 1} 실패: ${result.error}`);
             }

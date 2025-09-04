@@ -26,8 +26,10 @@ cp env.example .env
 ### 필수 환경 변수
 
 - `SAFE_WALLET_ADDRESS`: SafeWallet 컨트랙트 주소
-- `DAO_CONTRACT_ADDRESS`: DAOContract 주소
-- `DAO_PRIVATE_KEY`: DAOContract의 private key (간단한 테스트용)
+- `DAO_CONTRACT_ADDRESS`: DAOContract 주소 (이미 SafeWallet에 등록됨)
+- `MULTISIG_WALLET_ADDRESS`: MultiSigWallet 컨트랙트 주소 (DAOContract의 소유자)
+- `MULTISIG_SIGNER1_PRIVATE_KEY`: MultiSigWallet 서명자 1의 private key
+- `MULTISIG_SIGNER2_PRIVATE_KEY`: MultiSigWallet 서명자 2의 private key
 - `RPC_URL`: 이더리움 RPC URL
 
 ## 사용법
