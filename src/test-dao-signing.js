@@ -26,7 +26,7 @@ async function testDAOContractSigning() {
     
     try {
         const config = {
-            rpcUrl: process.env.RPC_URL || 'http://localhost:8545',
+            rpcUrl: process.env.RPC_URL,
             safeWalletAddress: process.env.SAFE_WALLET_ADDRESS,
             daoContractAddress: process.env.DAO_CONTRACT_ADDRESS,
             multiSigWalletAddress: process.env.MULTISIG_WALLET_ADDRESS,
