@@ -2,7 +2,7 @@ const { ethers } = require('ethers');
 require('dotenv').config();
 
 // EIP-1271 Magic Values
-const MAGICVALUE = '0x1626ba7e';
+const MAGICVALUE = '0x20c13b0b';
 const INVALID_SIGNATURE = '0x00000000';
 
 class SafeWalletDAOProtocol {

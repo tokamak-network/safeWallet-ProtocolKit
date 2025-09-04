@@ -6,8 +6,10 @@
   "scripts": {
     "test": "node src/test-dao-signing.js",
     "test-pure": "node src/test-pure-ethers.js",
+    "test-simple": "node src/test-simple-confirm.js",
     "sign": "node src/dao-signing-script.js",
-    "sign-pure": "node src/pure-ethers-dao-signing.js"
+    "sign-pure": "node src/pure-ethers-dao-signing.js",
+    "confirm": "node src/simple-confirm-test.js"
   },
   "dependencies": {
     "ethers": "^6.8.0",
