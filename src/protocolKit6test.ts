@@ -43,8 +43,8 @@ async function main(): Promise<void> {
 
     let protocolKit = await Safe.init({
         provider: RPC_URL!,
-        signer: CHILD_SIGNER1_PRIVATE_KEY!,
-        safeAddress: SAFE_ADDRESS!
+        signer: OWNER_PRIVATE_KEY!,
+        safeAddress: DAO_ADDRESS!
     })
 
     // 3. Safe 트랜잭션 데이터 생성
@@ -70,7 +70,7 @@ async function main(): Promise<void> {
     let multiSigSigns = await protocolKit.connect({
         provider: RPC_URL!,
         signer: OWNER_PRIVATE_KEY!,
-        safeAddress: MULTISIG_ADDRESS!
+        safeAddress: DAO_ADDRESS!
     }).then((k) =>
         k.signTransaction(transactionSafe2_3, SigningMethod.SAFE_SIGNATURE, SAFE_ADDRESS)
     )
@@ -79,7 +79,7 @@ async function main(): Promise<void> {
     .connect({
         provider: RPC_URL!,
         signer: OWNER_PRIVATE_KEY2!,
-        safeAddress: MULTISIG_ADDRESS!
+        safeAddress: DAO_ADDRESS!
     })
     .then((k) =>
         k.signTransaction(transactionSafe2_3, SigningMethod.SAFE_SIGNATURE, SAFE_ADDRESS)
@@ -95,8 +95,14 @@ async function main(): Promise<void> {
     //         return k.signTransaction(transactionSafe2_3, SigningMethod.ETH_SIGN)
     //     })
 
+    // console.log("transactionSafe2_3 :", transactionSafe2_3)
+
+    // const contractSignature = await buildContractSignature(
+    //     Array.from(transactionSafe2_3.signatures.values()),
+    //     DAO_ADDRESS!
+    // )
     const contractSignature = await buildContractSignature(
-        Array.from(transactionSafe2_3.signatures.values()),
+        Array.from(multiSigSigns.signatures.values()),
         DAO_ADDRESS!
     )
     console.log("contractSignature :", contractSignature)
@@ -107,20 +113,21 @@ async function main(): Promise<void> {
     console.log(transactionSafe2_3)
 
     const safeTransactionHash = await protocolKit.getTransactionHash(transactionSafe2_3)
-    console.log("safeTransactionHash :", safeTransactionHash)
+    // console.log("safeTransactionHash :", safeTransactionHash)
     
     const signerSafeSig2_3 = transactionSafe2_3.getSignature(DAO_ADDRESS!) as EthSafeSignature
+    // console.log("signerSafeSig2_3 :", signerSafeSig2_3)
 
     const apiKit = new SafeApiKit({
         chainId: 11155111n,
         apiKey: SAFE_API_KEY
     });
 
-    // const safeTxHash = "0x34148392eddee2686a39b6da312a95afdbf953bef85122e5b0c73f3b624cba8f"
+    const safeTxHash = "0x34148392eddee2686a39b6da312a95afdbf953bef85122e5b0c73f3b624cba8f"
     console.log('Transaction ready for confirm');
 
     await apiKit.confirmTransaction(
-        safeTransactionHash,
+        safeTxHash,
         buildSignatureBytes([signerSafeSig2_3])
     )
 

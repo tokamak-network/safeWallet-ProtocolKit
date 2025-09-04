@@ -42,7 +42,7 @@ async function main(): Promise<void> {
     const OWNER_ADDRESS = "0x6E1c4a442E9B9ddA59382ee78058650F1723E0F6"
 
     const safeAccountConfig: SafeAccountConfig = {
-        owners: ['0x1a51Fe6968f9517Db75e080e0436081C80c13291', '0x55E324C36799bD4CfBf515f9013E2E899EaD8B7f', '0x195c1D13fC588C0b1Ca8A78dd5771E0eE5A2EAe4'],
+        owners: ['0x6E1c4a442E9B9ddA59382ee78058650F1723E0F6', '0xA2101482b28E3D99ff6ced517bA41EFf4971a386', '0x3bFda92Fa3bC0AB080Cac3775147B6318b1C5115'],
         threshold: 2
         // More optional properties
     }
@@ -81,7 +81,7 @@ async function main(): Promise<void> {
     protocolKit = await protocolKit.connect({
         provider: RPC_URL!,
         signer: OWNER_PRIVATE_KEY!,
-        safeAddress: MULTISIG_ADDRESS!
+        safeAddress: DAO_ADDRESS!
     })
 
 
@@ -115,7 +115,7 @@ async function main(): Promise<void> {
         Array.from(transactionSafe2_3.signatures.values()),
         DAO_ADDRESS!
     )
-    // console.log("signatureSafe2_3 : ", signatureSafe2_3);
+    console.log("signatureSafe2_3 : ", signatureSafe2_3);
   
     // Add the signatureSafe2_3 to safeTransaction
     // After this, the safeTransaction contains the signature from OWNER_1_ADDRESS, OWNER_2_ADDRESS, SAFE_1_1_ADDRESS and SAFE_2_3_ADDRESS

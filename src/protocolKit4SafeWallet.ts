@@ -110,6 +110,8 @@ async function main(): Promise<void> {
         PARENT_ADDRESS // Parent Safe address
     )
 
+    // console.log("transactionSafe2_3 : ", transactionSafe2_3)
+
     // Build the contract signature of SAFE_2_3_ADDRESS
     const signatureSafe2_3 = await buildContractSignature(
         Array.from(transactionSafe2_3.signatures.values()),
@@ -144,10 +146,11 @@ async function main(): Promise<void> {
     // console.log('signerSafeSig2_3:', signerSafeSig2_3);
     console.log('Transaction ready for confirm');
 
-    await apiKit.confirmTransaction(
+    let result = await apiKit.confirmTransaction(
         safeTxHash,
         buildSignatureBytes([signerSafeSig2_3])
     )
+    console.log(result)
     // await apiKit.confirmTransaction(
     //     safeTransactionHash,
     //     signature.data
