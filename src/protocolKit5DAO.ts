@@ -125,6 +125,7 @@ async function main(): Promise<void> {
     // const signature = await protocolKit.signHash(safeTransactionHash)
     
     const signerSafeSig2_3 = transactionSafe2_3.getSignature(DAO_ADDRESS!) as EthSafeSignature
+    console.log("signerSafeSig2_3 :", signerSafeSig2_3)
 
     const apiKit = new SafeApiKit({
         chainId: 11155111n,
@@ -139,15 +140,10 @@ async function main(): Promise<void> {
     // const signedTransaction = await apiKit.getTransaction(safeTransactionHash)
     // console.log("signedTransaction :", signedTransaction)
 
-
-    // API 사용하지 않고 로컬에서만 처리
-    // console.log('Transaction hash:', safeTransactionHash);
-    // console.log('Signatures:', transactionSafe2_3.signatures);
-    // console.log('signerSafeSig2_3:', signerSafeSig2_3);
     console.log('Transaction ready for confirm');
 
-    // let check = buildSignatureBytes([signerSafeSig2_3])
-    // console.log(check)
+    let check = buildSignatureBytes([signerSafeSig2_3])
+    console.log(check)
 
     let result = await apiKit.confirmTransaction(
         safeTxHash,

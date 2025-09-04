@@ -37,6 +37,8 @@ if (!RPC_URL || !OWNER_PRIVATE_KEY || !OWNER_PRIVATE_KEY2 || !SAFE_ADDRESS || !D
 // const wallet = new ethers.Wallet(OWNER_PRIVATE_KEY, provider);
 
 async function main(): Promise<void> {
+    console.log("PARENT_ADDRESS : ", PARENT_ADDRESS)
+    console.log("CHILD_ADDRESS : ", CHILD_ADDRESS)
     const STRING_MESSAGE = "I'm the owner of this Safe account"
 
     const OWNER_ADDRESS = "0x6E1c4a442E9B9ddA59382ee78058650F1723E0F6"
@@ -110,14 +112,14 @@ async function main(): Promise<void> {
         PARENT_ADDRESS // Parent Safe address
     )
 
-    // console.log("transactionSafe2_3 : ", transactionSafe2_3)
+    console.log("transactionSafe2_3 : ", transactionSafe2_3)
 
     // Build the contract signature of SAFE_2_3_ADDRESS
     const signatureSafe2_3 = await buildContractSignature(
         Array.from(transactionSafe2_3.signatures.values()),
         CHILD_ADDRESS!
     )
-    console.log("signatureSafe2_3 : ", signatureSafe2_3);
+    // console.log("signatureSafe2_3 : ", signatureSafe2_3);
   
     // Add the signatureSafe2_3 to safeTransaction
     // After this, the safeTransaction contains the signature from OWNER_1_ADDRESS, OWNER_2_ADDRESS, SAFE_1_1_ADDRESS and SAFE_2_3_ADDRESS
@@ -128,7 +130,7 @@ async function main(): Promise<void> {
     
     const signerSafeSig2_3 = transactionSafe2_3.getSignature(CHILD_ADDRESS!) as EthSafeSignature
 
-    // console.log("signerSafeSig2_3 :", signerSafeSig2_3)
+    console.log("signerSafeSig2_3 :", signerSafeSig2_3)
 
     const apiKit = new SafeApiKit({
         chainId: 11155111n,
@@ -138,7 +140,6 @@ async function main(): Promise<void> {
     // // Get the transactions
     // const signedTransaction = await apiKit.getTransaction(safeTransactionHash)
     // console.log("signedTransaction :", signedTransaction)
-
 
     // API 사용하지 않고 로컬에서만 처리
     // console.log('Transaction hash:', safeTransactionHash);
