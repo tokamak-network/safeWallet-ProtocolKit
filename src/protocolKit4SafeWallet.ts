@@ -115,7 +115,7 @@ async function main(): Promise<void> {
         Array.from(transactionSafe2_3.signatures.values()),
         CHILD_ADDRESS!
     )
-    // console.log("signatureSafe2_3 : ", signatureSafe2_3);
+    console.log("signatureSafe2_3 : ", signatureSafe2_3);
   
     // Add the signatureSafe2_3 to safeTransaction
     // After this, the safeTransaction contains the signature from OWNER_1_ADDRESS, OWNER_2_ADDRESS, SAFE_1_1_ADDRESS and SAFE_2_3_ADDRESS
@@ -126,7 +126,7 @@ async function main(): Promise<void> {
     
     const signerSafeSig2_3 = transactionSafe2_3.getSignature(CHILD_ADDRESS!) as EthSafeSignature
 
-    console.log("signerSafeSig2_3 :", signerSafeSig2_3)
+    // console.log("signerSafeSig2_3 :", signerSafeSig2_3)
 
     const apiKit = new SafeApiKit({
         chainId: 11155111n,
