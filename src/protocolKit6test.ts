@@ -157,15 +157,15 @@ async function main(): Promise<void> {
           k.signTransaction(safeTx, SigningMethod.SAFE_SIGNATURE, SAFE_ADDRESS)
         )
 
-    // multiSigSigns = await protocolKit
-    //     .connect({
-    //         provider: RPC_URL!,
-    //         signer: OWNER_PRIVATE_KEY2!,
-    //         safeAddress: DAO_ADDRESS!
-    //     })
-    //     .then((k) =>
-    //         k.signTransaction(safeTx, SigningMethod.SAFE_SIGNATURE, SAFE_ADDRESS)
-    //     )
+    multiSigSigns = await protocolKit
+        .connect({
+            provider: RPC_URL!,
+            signer: OWNER_PRIVATE_KEY2!,
+            safeAddress: DAO_ADDRESS!
+        })
+        .then((k) =>
+            k.signTransaction(safeTx, SigningMethod.SAFE_SIGNATURE, SAFE_ADDRESS)
+        )
       
       const contractSignature = await buildContractSignature(
         Array.from(multiSigSigns.signatures.values()),
@@ -188,6 +188,8 @@ async function main(): Promise<void> {
           safeTx.getSignature(DAO_ADDRESS!) as SafeSignature,
         ])
       )
+
+      console.log(signatureResponse)
 }
 
 

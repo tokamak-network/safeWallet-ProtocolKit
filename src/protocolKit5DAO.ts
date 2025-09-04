@@ -62,15 +62,15 @@ async function main(): Promise<void> {
     const safeTransactionData = {
         "to": "0xf0B595d10a92A5a9BC3fFeA7e79f5d266b6035Ea",
         "data": "0x",
-        "value": "20000000000000000",
+        "value": "10000000000000000",
         "operation": 0,
         "baseGas": "0",
         "gasPrice": "0",
         "gasToken": "0x0000000000000000000000000000000000000000",
-        "nonce": 0,
+        "nonce": 1,
         "refundReceiver": "0x0000000000000000000000000000000000000000",
         "safeTxGas": "0"
-      }
+    }
 
     let transactionSafe2_3 = await protocolKit.createTransaction({
         transactions: [safeTransactionData]
@@ -134,7 +134,7 @@ async function main(): Promise<void> {
     // const transactions = await apiKit.getPendingTransactions(SAFE_ADDRESS!);
     // console.log(transactions.results[0].confirmations)
 
-    const safeTxHash = "0x34148392eddee2686a39b6da312a95afdbf953bef85122e5b0c73f3b624cba8f"
+    const safeTxHash = "0x6d86e36a17879aad78c469c2b02a5845e5ec1b850f7c21921820b49bd195c01a"
     // // Get the transactions
     // const signedTransaction = await apiKit.getTransaction(safeTransactionHash)
     // console.log("signedTransaction :", signedTransaction)
@@ -146,8 +146,8 @@ async function main(): Promise<void> {
     // console.log('signerSafeSig2_3:', signerSafeSig2_3);
     console.log('Transaction ready for confirm');
 
-    let check = buildSignatureBytes([signerSafeSig2_3])
-    console.log(check)
+    // let check = buildSignatureBytes([signerSafeSig2_3])
+    // console.log(check)
 
     let result = await apiKit.confirmTransaction(
         safeTxHash,
