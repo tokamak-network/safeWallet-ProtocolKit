@@ -42,7 +42,7 @@ async function main(): Promise<void> {
     const OWNER_ADDRESS = "0x6E1c4a442E9B9ddA59382ee78058650F1723E0F6"
 
     const safeAccountConfig: SafeAccountConfig = {
-        owners: ['0x1a51Fe6968f9517Db75e080e0436081C80c13291', '0x55E324C36799bD4CfBf515f9013E2E899EaD8B7f', '0x195c1D13fC588C0b1Ca8A78dd5771E0eE5A2EAe4'],
+        owners: ['0x1a51Fe6968f9517Db75e080e0436081C80c13291', '0x0A92feB25C1ff258A7df028a9469412ba9F5b009', '0x195c1D13fC588C0b1Ca8A78dd5771E0eE5A2EAe4'],
         threshold: 2
         // More optional properties
     }
@@ -124,7 +124,7 @@ async function main(): Promise<void> {
     transactionSafe2_3.addSignature(signatureSafe2_3)
 
     const safeTransactionHash = await protocolKit.getTransactionHash(transactionSafe2_3)
-    const signature = await protocolKit.signHash(safeTransactionHash)
+    // const signature = await protocolKit.signHash(safeTransactionHash)
     
     const signerSafeSig2_3 = transactionSafe2_3.getSignature(CHILD_ADDRESS!) as EthSafeSignature
 
@@ -145,6 +145,9 @@ async function main(): Promise<void> {
     // console.log('Signatures:', transactionSafe2_3.signatures);
     // console.log('signerSafeSig2_3:', signerSafeSig2_3);
     console.log('Transaction ready for confirm');
+
+    let check = buildSignatureBytes([signerSafeSig2_3])
+    console.log(check)
 
     let result = await apiKit.confirmTransaction(
         safeTxHash,

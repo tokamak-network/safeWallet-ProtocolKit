@@ -55,7 +55,7 @@ async function main(): Promise<void> {
     let protocolKit = await Safe.init({
         provider: RPC_URL!,
         signer: OWNER_PRIVATE_KEY!,
-        predictedSafe
+        safeAddress: SAFE_ADDRESS!
     })
 
     // 3. Safe 트랜잭션 데이터 생성
@@ -70,7 +70,7 @@ async function main(): Promise<void> {
         "nonce": 0,
         "refundReceiver": "0x0000000000000000000000000000000000000000",
         "safeTxGas": "0"
-    }
+      }
 
     let transactionSafe2_3 = await protocolKit.createTransaction({
         transactions: [safeTransactionData]
@@ -122,7 +122,7 @@ async function main(): Promise<void> {
     transactionSafe2_3.addSignature(signatureSafe2_3)
 
     const safeTransactionHash = await protocolKit.getTransactionHash(transactionSafe2_3)
-    const signature = await protocolKit.signHash(safeTransactionHash)
+    // const signature = await protocolKit.signHash(safeTransactionHash)
     
     const signerSafeSig2_3 = transactionSafe2_3.getSignature(DAO_ADDRESS!) as EthSafeSignature
 
@@ -130,6 +130,10 @@ async function main(): Promise<void> {
         chainId: 11155111n,
         apiKey: SAFE_API_KEY
     });
+
+    // const transactions = await apiKit.getPendingTransactions(SAFE_ADDRESS!);
+    // console.log(transactions.results[0].confirmations)
+
     const safeTxHash = "0x34148392eddee2686a39b6da312a95afdbf953bef85122e5b0c73f3b624cba8f"
     // // Get the transactions
     // const signedTransaction = await apiKit.getTransaction(safeTransactionHash)
@@ -142,10 +146,14 @@ async function main(): Promise<void> {
     // console.log('signerSafeSig2_3:', signerSafeSig2_3);
     console.log('Transaction ready for confirm');
 
-    await apiKit.confirmTransaction(
+    let check = buildSignatureBytes([signerSafeSig2_3])
+    console.log(check)
+
+    let result = await apiKit.confirmTransaction(
         safeTxHash,
         buildSignatureBytes([signerSafeSig2_3])
     )
+    console.log(result)
     // await apiKit.confirmTransaction(
     //     safeTransactionHash,
     //     signature.data
