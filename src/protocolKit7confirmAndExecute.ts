@@ -38,7 +38,7 @@ async function main(): Promise<void> {
       "baseGas": "0",
       "gasPrice": "0",
       "gasToken": "0x0000000000000000000000000000000000000000",
-      "nonce": 3,
+      "nonce": 4,
       "refundReceiver": "0x0000000000000000000000000000000000000000",
       "safeTxGas": "0"
     }
@@ -52,12 +52,16 @@ async function main(): Promise<void> {
       provider: RPC_URL!,
       safeAddress: SAFE_ADDRESS!,
     })
+    
+    console.log("protocolKit1", protocolKit)
 
     let safeTx = await protocolKit.createTransaction({
       transactions: [
           safeTransactionData
       ],
     })
+
+    console.log("safeTx1", safeTx)
 
     // console.log(SigningMethod)
 
@@ -93,7 +97,11 @@ async function main(): Promise<void> {
       Array.from(multiSigSigns.signatures.values()),
       DAO_ADDRESS!
     )
+    console.log("contractSignature", contractSignature)
+    // const contractSig = buildSignatureBytes([contractSignature])
+    
     safeTx.addSignature(contractSignature)
+    console.log("safeTx2", safeTx)
     
     const pendingTxs = await apiKit.getPendingTransactions(
       SAFE_ADDRESS!
@@ -107,8 +115,15 @@ async function main(): Promise<void> {
       .toSafeTransactionType(transaction)
       .then((safeTx) => Array.from(safeTx.signatures.values())[0])
 
+    console.log("orginSign", orginSign)
+
     const safeTxHash = await protocolKit.getTransactionHash(safeTx)
     console.log("safeTxHash", safeTxHash)
+    console.log("contractSignature", buildSignatureBytes([
+      safeTx.getSignature(DAO_ADDRESS!) as SafeSignature,
+    ]))
+
+
     const signatureResponse = await apiKit.confirmTransaction(
       safeTxHash,
       buildSignatureBytes([
@@ -116,26 +131,30 @@ async function main(): Promise<void> {
         safeTx.getSignature(DAO_ADDRESS!) as SafeSignature,
       ])
     )
+    // const signatureResponse = await apiKit.confirmTransaction(
+    //   safeTxHash,
+    //   contractSig
+    // )
     console.log("signatureResponse", signatureResponse)
 
-    const safeTransaction = await protocolKit.toSafeTransactionType(transaction)
-    safeTransaction.encodedSignatures = () => {
-      return signatureResponse.signature
-    }
-    const data = await protocolKit.getEncodedTransaction(safeTransaction)
+    // const safeTransaction = await protocolKit.toSafeTransactionType(transaction)
+    // safeTransaction.encodedSignatures = () => {
+    //   return signatureResponse.signature
+    // }
+    // const data = await protocolKit.getEncodedTransaction(safeTransaction)
 
-    const account = privateKeyToAccount(process.env.SAFE_SIGNER1_PRIVATE_KEY as Hex)
-    const client = createWalletClient({
-      account,
-      chain: sepolia,
-      transport: http("https://eth-sepolia.api.onfinality.io/public"),
-    })
+    // const account = privateKeyToAccount(process.env.SAFE_SIGNER1_PRIVATE_KEY as Hex)
+    // const client = createWalletClient({
+    //   account,
+    //   chain: sepolia,
+    //   transport: http("https://eth-sepolia.api.onfinality.io/public"),
+    // })
 
-    const hash = await client.sendTransaction({
-      to: SAFE_ADDRESS as `0x${string}`,
-      data: data as Hex,
-    })
-    console.log(hash)
+    // const hash = await client.sendTransaction({
+    //   to: SAFE_ADDRESS as `0x${string}`,
+    //   data: data as Hex,
+    // })
+    // console.log(hash)
 
 }
 
