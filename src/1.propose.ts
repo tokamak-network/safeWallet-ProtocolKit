@@ -8,7 +8,7 @@ import { privateKeyToAccount } from "viem/accounts"
 
 
 const RPC_URL = process.env.RPC_URL;
-const SAFE_ADDRESS = process.env.SAFE_ADDRESS;
+const SAFE_ADDRESS = process.env.SAFE_WALLET_ADDRESS;
 const SAFE_API_KEY = process.env.SAFE_API_KEY;
 
 
@@ -20,6 +20,7 @@ async function main(): Promise<void> {
 
     let protocolKit = await Safe.init({
         provider: "https://eth-sepolia.public.blastapi.io",
+        signer: process.env.TRH_ADMIN_PRIVATE_KEY as Hex,
         safeAddress: SAFE_ADDRESS!,
     })
 
@@ -31,15 +32,15 @@ async function main(): Promise<void> {
 
     let safeTx = await protocolKit.createTransaction({
         transactions: [
-          {
-            to: "0xf0B595d10a92A5a9BC3fFeA7e79f5d266b6035Ea",
-            value: "1000000000000000",
-            data: "0x",
-            operation: OperationType.Call,
-          },
+            {
+                to: "0xf0B595d10a92A5a9BC3fFeA7e79f5d266b6035Ea",
+                value: "1000000000000000",
+                data: "0x",
+                operation: OperationType.Call,
+            },
         ],
     })
-
+    
     const account = privateKeyToAccount(process.env.TRH_ADMIN_PRIVATE_KEY as Hex)
     const safeTxHash = await protocolKit.getTransactionHash(safeTx)
     const signature = await protocolKit.signHash(safeTxHash)
