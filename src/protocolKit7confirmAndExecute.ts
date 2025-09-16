@@ -8,11 +8,13 @@ import 'dotenv/config'
 import Safe, {
     buildContractSignature,
     buildSignatureBytes,
+    preimageSafeTransactionHash
 } from '@safe-global/protocol-kit'
 import {
     OperationType,
     SafeSignature,
     SigningMethod,
+    SafeTransactionData
   } from "@safe-global/types-kit"
 import SafeApiKit from '@safe-global/api-kit'
 import type { Hex } from "viem"
@@ -38,7 +40,7 @@ async function main(): Promise<void> {
       "baseGas": "0",
       "gasPrice": "0",
       "gasToken": "0x0000000000000000000000000000000000000000",
-      "nonce": 4,
+      "nonce": 5,
       "refundReceiver": "0x0000000000000000000000000000000000000000",
       "safeTxGas": "0"
     }
@@ -53,7 +55,7 @@ async function main(): Promise<void> {
       safeAddress: SAFE_ADDRESS!,
     })
     
-    console.log("protocolKit1", protocolKit)
+    // console.log("protocolKit1", protocolKit)
 
     let safeTx = await protocolKit.createTransaction({
       transactions: [
@@ -61,7 +63,27 @@ async function main(): Promise<void> {
       ],
     })
 
-    console.log("safeTx1", safeTx)
+    let protocolKit2 = await protocolKit.connect({
+      signer: process.env.OWNER_PRIVATE_KEY,
+      safeAddress: DAO_ADDRESS,
+    })
+
+    let chainId = await protocolKit2.getChainId()
+    console.log('체인 ID:', chainId)
+
+    let safeVersion = await protocolKit2.getContractVersion()
+    console.log("safeVersion", safeVersion)
+
+    const txHashData = preimageSafeTransactionHash(
+      SAFE_ADDRESS!,
+      safeTx.data as SafeTransactionData,
+      safeVersion,
+      chainId
+    )
+
+    console.log("txHashData", txHashData)
+
+    // console.log("safeTx1", safeTx)
 
     // console.log(SigningMethod)
 
@@ -77,7 +99,7 @@ async function main(): Promise<void> {
           SAFE_ADDRESS
         )
       )
-    console.log("multiSigSigns1", multiSigSigns)
+    // console.log("multiSigSigns1", multiSigSigns)
 
     multiSigSigns = await protocolKit
       .connect({
@@ -91,17 +113,17 @@ async function main(): Promise<void> {
           SAFE_ADDRESS
         )
       )
-      console.log("multiSigSigns2", multiSigSigns)
+      // console.log("multiSigSigns2", multiSigSigns)
     
     const contractSignature = await buildContractSignature(
       Array.from(multiSigSigns.signatures.values()),
       DAO_ADDRESS!
     )
-    console.log("contractSignature", contractSignature)
+    // console.log("contractSignature", contractSignature)
     // const contractSig = buildSignatureBytes([contractSignature])
     
     safeTx.addSignature(contractSignature)
-    console.log("safeTx2", safeTx)
+    // console.log("safeTx2", safeTx)
     
     const pendingTxs = await apiKit.getPendingTransactions(
       SAFE_ADDRESS!
@@ -115,21 +137,30 @@ async function main(): Promise<void> {
       .toSafeTransactionType(transaction)
       .then((safeTx) => Array.from(safeTx.signatures.values())[0])
 
-    console.log("orginSign", orginSign)
-
+    // console.log("orginSign", orginSign)
+    
+    
     const safeTxHash = await protocolKit.getTransactionHash(safeTx)
     console.log("safeTxHash", safeTxHash)
-    console.log("contractSignature", buildSignatureBytes([
+
+    // const beforeTx = await apiKit.getTransaction(safeTxHash)
+    // console.log("beforeTx", beforeTx)
+
+    let sumSignature = buildSignatureBytes([
+      orginSign,
       safeTx.getSignature(DAO_ADDRESS!) as SafeSignature,
-    ]))
+    ])
+    console.log("sumSignature", sumSignature)
+    console.log("sumSignature.length", sumSignature.length)
+
+    
+
+    let makeSignature = "0x000000000000000000000000A2101482b28E3D99ff6ced517bA41EFf4971a386000000000000000000000000000000000000000000000000000000000000008200c5eca5424f426c2e4817cae6fd86ae57c97d757ee49e609c669065edf9dee6e75b4a2e842d67284b50f4b3024264eb70b38145c31528c8d330d92bad4409aea71b00000000000000000000000000000000000000000000000000000000000000827c884a93d367f70eed1edc95ee6b9e0b96fe7f4caf03b7a190e7786aab63be2d302a5d3b534277789465c7b917ba4206ea6c6a5f21e6487c17c2aa118dd6bc2a209e77e9dd73703da05391e6d303891802c4ae677f8e3582d2d27de52391b0bac11d81497fcf36d63b42fcab38cd7d8712aebda9f663f4b21b6f409316b4bf323b1f"
 
 
     const signatureResponse = await apiKit.confirmTransaction(
       safeTxHash,
-      buildSignatureBytes([
-        orginSign,
-        safeTx.getSignature(DAO_ADDRESS!) as SafeSignature,
-      ])
+      sumSignature
     )
     // const signatureResponse = await apiKit.confirmTransaction(
     //   safeTxHash,
@@ -137,24 +168,24 @@ async function main(): Promise<void> {
     // )
     console.log("signatureResponse", signatureResponse)
 
-    // const safeTransaction = await protocolKit.toSafeTransactionType(transaction)
-    // safeTransaction.encodedSignatures = () => {
-    //   return signatureResponse.signature
-    // }
-    // const data = await protocolKit.getEncodedTransaction(safeTransaction)
+    const safeTransaction = await protocolKit.toSafeTransactionType(transaction)
+    safeTransaction.encodedSignatures = () => {
+      return signatureResponse.signature
+    }
+    const data = await protocolKit.getEncodedTransaction(safeTransaction)
 
-    // const account = privateKeyToAccount(process.env.SAFE_SIGNER1_PRIVATE_KEY as Hex)
-    // const client = createWalletClient({
-    //   account,
-    //   chain: sepolia,
-    //   transport: http("https://eth-sepolia.api.onfinality.io/public"),
-    // })
+    const account = privateKeyToAccount(process.env.EXECUTE_PRIVATE_KEY as Hex)
+    const client = createWalletClient({
+      account,
+      chain: sepolia,
+      transport: http("https://eth-sepolia.api.onfinality.io/public"),
+    })
 
-    // const hash = await client.sendTransaction({
-    //   to: SAFE_ADDRESS as `0x${string}`,
-    //   data: data as Hex,
-    // })
-    // console.log(hash)
+    const hash = await client.sendTransaction({
+      to: SAFE_ADDRESS as `0x${string}`,
+      data: data as Hex,
+    })
+    console.log(hash)
 
 }
 
