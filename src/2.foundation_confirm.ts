@@ -7,20 +7,16 @@ import type { Hex } from "viem"
 import { privateKeyToAccount } from "viem/accounts"
 
 
-const RPC_URL = process.env.RPC_URL;
-const MULTISIG_OWNER_KEY = process.env.OWNER_PRIVATE_KEY;
-const MULTISIG_OWNER_KEY2 = process.env.OWNER_PRIVATE_KEY2;
-const ADMIN_KEY = process.env.TRH_ADMIN_PRIVATE_KEY;
+const RPC_URL = process.env.RPC_URL;;
 const FOUNDATION_KEY = process.env.TRH_ADMIN_PRIVATE_KEY2;
-const SAFE_ADDRESS = process.env.SAFE_ADDRESS;
-const DAO_ADDRESS = process.env.DAO_ADDRESS;
+const SAFE_ADDRESS = process.env.SAFE_WALLET_ADDRESS;
 const SAFE_API_KEY = process.env.SAFE_API_KEY;
 
 
 async function main(): Promise<void> {
     const apiKit = new SafeApiKit({
         chainId: 11155111n,
-        apiKey: process.env.SAFE_API_KEY,
+        apiKey: SAFE_API_KEY,
     })
 
     let protocolKit = await Safe.init({
@@ -41,6 +37,7 @@ async function main(): Promise<void> {
     })
 
     const safeTxHash = await protocolKit.getTransactionHash(safeTx)
+    console.log("safeTxHash :", safeTxHash)
     const signature = await protocolKit.signHash(safeTxHash)
 
     const signatureResponse = await apiKit.confirmTransaction(
