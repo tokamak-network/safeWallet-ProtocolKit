@@ -26,14 +26,14 @@ const SAFE_API_KEY = process.env.SAFE_API_KEY;
 
 async function main(): Promise<void> {
     let safeTransactionData = {
-        "to": "0xf0B595d10a92A5a9BC3fFeA7e79f5d266b6035Ea",
-        "data": "0x",
-        "value": "100000000000",
+        "to": "0x6F54976e5a39faF473AB7678d28bd9A18EDBaF1B",
+        "data": "0x7eff275e0000000000000000000000006f54976e5a39faf473ab7678d28bd9a18edbaf1b000000000000000000000000f0b595d10a92a5a9bc3ffea7e79f5d266b6035ea",
+        "value": "0",
         "operation": 0,
         "baseGas": "0",
         "gasPrice": "0",
         "gasToken": "0x0000000000000000000000000000000000000000",
-        "nonce": 0,
+        "nonce": 1,
         "refundReceiver": "0x0000000000000000000000000000000000000000",
         "safeTxGas": "0"
     }
@@ -114,14 +114,19 @@ async function main(): Promise<void> {
         .toSafeTransactionType(transaction)
         .then((safeTx) => Array.from(safeTx.signatures.values())[0])
 
-    // console.log("orginSign :", orginSign)
+    console.log("orginSign :", orginSign)
     // console.log("orginSign.length :", orginSign.data.length)
 
     const orginSign2 = await protocolKit
         .toSafeTransactionType(transaction)
         .then((safeTx) => Array.from(safeTx.signatures.values())[1])
-    // console.log("orginSign2 :", orginSign2)
+    console.log("orginSign2 :", orginSign2)
     // console.log("orginSign2.length :", orginSign2.data.length)
+
+    const orginSign3 = await protocolKit
+        .toSafeTransactionType(transaction)
+        .then((safeTx) => Array.from(safeTx.signatures.values())[2])
+    console.log("orginSign3 :", orginSign3)
 
     // const signature = buildSignatureBytes([
     //     orginSign,
