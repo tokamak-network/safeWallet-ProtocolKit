@@ -13,6 +13,8 @@ const SAFE_API_KEY = process.env.SAFE_API_KEY;
 
 
 async function main(): Promise<void> {
+    let sampleAddress = "0xf0B595d10a92A5a9BC3fFeA7e79f5d266b6035Ea"
+
     const apiKit = new SafeApiKit({
         chainId: 11155111n,
         apiKey: SAFE_API_KEY,
@@ -33,7 +35,7 @@ async function main(): Promise<void> {
     let safeTx = await protocolKit.createTransaction({
         transactions: [
             {
-                to: "0xf0B595d10a92A5a9BC3fFeA7e79f5d266b6035Ea",
+                to: "0x56dc8f22F6Fa3142E0aBdD4c7b6219B2CEa7bD78",
                 value: "1000000000000000",
                 data: "0x",
                 operation: OperationType.Call,
@@ -43,7 +45,9 @@ async function main(): Promise<void> {
     
     const account = privateKeyToAccount(process.env.TRH_ADMIN_PRIVATE_KEY as Hex)
     const safeTxHash = await protocolKit.getTransactionHash(safeTx)
+    console.log("safeTxHash", safeTxHash)
     const signature = await protocolKit.signHash(safeTxHash)
+    console.log("signature", signature)
     await apiKit.proposeTransaction({
       safeAddress: SAFE_ADDRESS!,
       safeTransactionData: safeTx.data,
@@ -51,6 +55,7 @@ async function main(): Promise<void> {
       senderAddress: account.address,
       senderSignature: signature.data,
     })
+    console.log("4")
     
     const transaction = await apiKit.getTransaction(safeTxHash)
     console.log(transaction)

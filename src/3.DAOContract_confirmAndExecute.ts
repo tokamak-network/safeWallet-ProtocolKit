@@ -49,7 +49,7 @@ async function main(): Promise<void> {
     let safeTx = await protocolKit.createTransaction({
         transactions: [
           {
-            to: "0xf0B595d10a92A5a9BC3fFeA7e79f5d266b6035Ea",
+            to: "0x56dc8f22F6Fa3142E0aBdD4c7b6219B2CEa7bD78",
             value: "1000000000000000",
             data: "0x",
             operation: OperationType.Call,
@@ -77,26 +77,26 @@ async function main(): Promise<void> {
         chainId
     )
 
-    console.log("txHashData", txHashData)
+    // console.log("txHashData", txHashData)
 
     const messageHash = await protocolKit.getSafeMessageHash(txHashData)
-    console.log("messageHash", messageHash)
+    // console.log("messageHash", messageHash)
 
     let safeTxHash = await protocolKit.getTransactionHash(safeTx)
     console.log("safeTxHash : ", safeTxHash)
 
     multiSigSigns = await protocolKit
-    .connect({
-        signer: process.env.OWNER_PRIVATE_KEY2 as Hex,
-        safeAddress: DAO_ADDRESS,
-    })
-    .then((k) =>
-        k.signTransaction(
-            multiSigSigns,
-            SigningMethod.SAFE_SIGNATURE,
-            SAFE_ADDRESS
+        .connect({
+            signer: process.env.OWNER_PRIVATE_KEY2 as Hex,
+            safeAddress: DAO_ADDRESS,
+        })
+        .then((k) =>
+            k.signTransaction(
+                multiSigSigns,
+                SigningMethod.SAFE_SIGNATURE,
+                SAFE_ADDRESS
+            )
         )
-    )
 
     const contractSignature = await buildContractSignature(
         Array.from(multiSigSigns.signatures.values()),

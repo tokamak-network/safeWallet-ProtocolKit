@@ -28,7 +28,7 @@ async function main(): Promise<void> {
     let safeTx = await protocolKit.createTransaction({
         transactions: [
           {
-            to: "0xf0B595d10a92A5a9BC3fFeA7e79f5d266b6035Ea",
+            to: "0x56dc8f22F6Fa3142E0aBdD4c7b6219B2CEa7bD78",
             value: "1000000000000000",
             data: "0x",
             operation: OperationType.Call,

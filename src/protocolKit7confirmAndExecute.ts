@@ -40,7 +40,7 @@ async function main(): Promise<void> {
       "baseGas": "0",
       "gasPrice": "0",
       "gasToken": "0x0000000000000000000000000000000000000000",
-      "nonce": 5,
+      "nonce": 6,
       "refundReceiver": "0x0000000000000000000000000000000000000000",
       "safeTxGas": "0"
     }
@@ -167,6 +167,7 @@ async function main(): Promise<void> {
     //   contractSig
     // )
     console.log("signatureResponse", signatureResponse)
+
 
     const safeTransaction = await protocolKit.toSafeTransactionType(transaction)
     safeTransaction.encodedSignatures = () => {
