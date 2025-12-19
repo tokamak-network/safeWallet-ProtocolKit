@@ -161,38 +161,40 @@ async function main(): Promise<void> {
 
     console.log("signatureBytes :", signatureBytes)
 
-    const signatureResponse = await apiKit.confirmTransaction(
-        safeTxHash,
-        buildSignatureBytes([
-            ethSafeSignature,
-            ethSafeSignature2,
-            safeTx.getSignature(DAO_ADDRESS!) as SafeSignature,
-        ])
-    )
-    console.log("signatureResponse :", signatureResponse)
+    // const signatureResponse = await apiKit.confirmTransaction(
+    //     safeTxHash,
+    //     buildSignatureBytes([
+    //         ethSafeSignature,
+    //         ethSafeSignature2,
+    //         safeTx.getSignature(DAO_ADDRESS!) as SafeSignature,
+    //     ])
+    // )
+    // console.log("signatureResponse :", signatureResponse)
 
     // const safeTransaction = await protocolKit.toSafeTransactionType(transaction)
+    const signature = '0x405fde30aa47fcb434d1fdfd076157bb99bb6e3011ff2020868d8f4f2f80255e2b0349a35b6a57ded5280427da8cdb24ddbe934c51d58971361ae25e31dfee281c000000000000000000000000a2101482b28e3d99ff6ced517ba41eff4971a38600000000000000000000000000000000000000000000000000000000000000c300c5356b2bc34be1d0e238bee40efba33b0b49a5272513c2a2d184d577c4a912dc51fe3e4d89b830a9f42e566d047f4cc1145c5fa4694646cc0183bd6716682cbf1b00000000000000000000000000000000000000000000000000000000000000825d72a57e565b5d05c9b0de12dab8ba5259f8636242016e587da7255bf24a2a6f0a5259eb6e86faee26e7442820d78ea6049d52df975931e2e953b10149165dea1f1b6d0977aa31da18e51f996fe2d68b6e790b3fb8719dd7649638b08e49c14d0251a77b138470e748ef201c5dd51df01714e3b9a9c672ffdba4d8c6eccd147a1a1f'
     safeTx.encodedSignatures = () => {
-        return signatureResponse.signature
+        return signature
     }
     console.log("safeTx2 :", safeTx)
 
-    // const data = await protocolKit.getEncodedTransaction(safeTransaction)
+
+    const data = await protocolKit.getEncodedTransaction(safeTx)
 
     // console.log("data :", data)
 
-    // const account = privateKeyToAccount(process.env.SAFE_WALLET_OWNERKEY as Hex)
-    // const client = createWalletClient({
-    //     account,
-    //     chain: sepolia,
-    //     transport: http("https://eth-sepolia.api.onfinality.io/public"),
-    // })
+    const account = privateKeyToAccount(process.env.SAFE_WALLET_OWNERKEY as Hex)
+    const client = createWalletClient({
+        account,
+        chain: sepolia,
+        transport: http("https://eth-sepolia.api.onfinality.io/public"),
+    })
 
-    // const hash = await client.sendTransaction({
-    //     to: SAFE_ADDRESS as `0x${string}`,
-    //     data: data as Hex,
-    // })
-    // console.log(hash)
+    const hash = await client.sendTransaction({
+        to: SAFE_ADDRESS as `0x${string}`,
+        data: data as Hex,
+    })
+    console.log(hash)
 
 }
 

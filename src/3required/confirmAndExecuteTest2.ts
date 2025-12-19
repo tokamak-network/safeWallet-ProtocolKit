@@ -138,21 +138,22 @@ async function main(): Promise<void> {
     ])
     console.log("signature : ", signature)
 
-    // const signatureResponse = await apiKit.confirmTransaction(
-    //     safeTxHash,
-    //     buildSignatureBytes([
-    //         orginSign,
-    //         orginSign2,
-    //         safeTx.getSignature(DAO_ADDRESS!) as SafeSignature,
-    //     ])
-    // )
-    // console.log("signatureResponse :", signatureResponse)
+    const signatureResponse = await apiKit.confirmTransaction(
+        safeTxHash,
+        buildSignatureBytes([
+            orginSign,
+            orginSign2,
+            safeTx.getSignature(DAO_ADDRESS!) as SafeSignature,
+        ])
+    )
+    console.log("signatureResponse :", signatureResponse)
 
     const safeTransaction = await protocolKit.toSafeTransactionType(transaction)
     console.log("safeTransaction :", safeTransaction)
-    // safeTransaction.encodedSignatures = () => {
-    //     return signatureResponse.signature
-    // }
+    safeTransaction.encodedSignatures = () => {
+        return signatureResponse.signature
+    }
+    console.log("safeTransaction2 :", safeTransaction)
 
     const data = await protocolKit.getEncodedTransaction(safeTransaction)
 
