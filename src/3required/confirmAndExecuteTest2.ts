@@ -109,6 +109,7 @@ async function main(): Promise<void> {
     const transaction = await apiKit.getTransaction(
         safeTxHash
     )
+    console.log(transaction)
 
     const orginSign = await protocolKit
         .toSafeTransactionType(transaction)
@@ -128,28 +129,30 @@ async function main(): Promise<void> {
         .then((safeTx) => Array.from(safeTx.signatures.values())[2])
     console.log("orginSign3 :", orginSign3)
 
-    // const signature = buildSignatureBytes([
-    //     orginSign,
-    //     orginSign2,
-    //     safeTx.getSignature(DAO_ADDRESS!) as SafeSignature,
-    // ])
-    // console.log("signature : ", signature)
+    console.log(safeTx.getSignature(DAO_ADDRESS!) as SafeSignature)
 
-    const signatureResponse = await apiKit.confirmTransaction(
-        safeTxHash,
-        buildSignatureBytes([
-            orginSign,
-            orginSign2,
-            safeTx.getSignature(DAO_ADDRESS!) as SafeSignature,
-        ])
-    )
-    console.log("signatureResponse :", signatureResponse)
+    const signature = buildSignatureBytes([
+        orginSign,
+        orginSign2,
+        safeTx.getSignature(DAO_ADDRESS!) as SafeSignature,
+    ])
+    console.log("signature : ", signature)
+
+    // const signatureResponse = await apiKit.confirmTransaction(
+    //     safeTxHash,
+    //     buildSignatureBytes([
+    //         orginSign,
+    //         orginSign2,
+    //         safeTx.getSignature(DAO_ADDRESS!) as SafeSignature,
+    //     ])
+    // )
+    // console.log("signatureResponse :", signatureResponse)
 
     const safeTransaction = await protocolKit.toSafeTransactionType(transaction)
-    safeTransaction.encodedSignatures = () => {
-        return signatureResponse.signature
-    }
     console.log("safeTransaction :", safeTransaction)
+    // safeTransaction.encodedSignatures = () => {
+    //     return signatureResponse.signature
+    // }
 
     const data = await protocolKit.getEncodedTransaction(safeTransaction)
 
@@ -161,6 +164,8 @@ async function main(): Promise<void> {
         chain: sepolia,
         transport: http("https://eth-sepolia.api.onfinality.io/public"),
     })
+
+    console.log(data as Hex)
 
     const hash = await client.sendTransaction({
         to: SAFE_ADDRESS as `0x${string}`,
